@@ -44,7 +44,22 @@ The pipeline is built around the following main components:
    ```bash
    ./submit_jobs.sh
    ```
+## Temporary Directory Generation and Its Significance for Psi4 Parallel Jobs
 
+### Overview
+In the context of running Psi4 computations across multiple jobs per node, the creation of a unique temporary directory (`tmpdir`) for each job is crucial. This temporary directory is used to store intermediate files and scratch data generated during the computation. Specifically, for Psi4, the environment variable `PSI_SCRATCH` is set to point to this `tmpdir`, ensuring that each job has a dedicated space for its temporary files.
+
+### Importance in Multijobs per Node
+When running multiple jobs in parallel on the same node, it is essential to isolate the scratch data of each job to avoid file conflicts and potential overwriting. By creating a dedicated `tmpdir` for each job, we ensure that:
+- Each job has a separate, unique workspace.
+- The computations remain isolated, preventing conflicts between jobs running on the same node.
+- The system's performance is optimized by using node-local storage for temporary data, reducing I/O overhead.
+
+### Role of PSI_SCRATCH
+`PSI_SCRATCH` is an environment variable used by Psi4 to define the directory where it writes temporary files during quantum chemical calculations. By setting `PSI_SCRATCH` to the `tmpdir` created for each job, Psi4 can efficiently manage its scratch files without risking data collision between concurrent jobs. Once a job finishes, its `tmpdir` can be safely deleted, freeing up resources for subsequent jobs.
+
+### Conclusion
+Proper handling of scratch files through the creation of temporary directories is a key component of running high-throughput, parallelized Psi4 jobs. By utilizing `PSI_SCRATCH`, we ensure smooth and efficient execution of quantum chemistry calculations, even when multiple jobs share the same compute node.
 ## Directory Structure
 
 - `main_dir_XXX/` - Main directories containing subdirectories for individual molecule files.
