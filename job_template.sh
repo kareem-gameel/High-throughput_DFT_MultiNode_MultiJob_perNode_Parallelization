@@ -10,14 +10,10 @@
 #SBATCH --error=job_error_%j.txt
 
 # Allow hyperthreading so each task uses 40 effective threads
-export OMP_NUM_THREADS=40
+export OMP_NUM_THREADS=2
 
 # Load the required modules
-module load CCEnv
-module load StdEnv/2020
-module load intel/2020
-module load openmpi
-module load psi4/1.5
+module load StdEnv/2023  gcc/12.3  openmpi/4.1.5 psi4/1.9.1
 
 source ~/xtb_env/bin/activate
 
